@@ -1,0 +1,7 @@
+<% if (locals.errors) {%>
+  <ul class="mt-3 text-start text-red-500 text-sm font-semibold list-disc list-inside">
+    <% errors.forEach(function(error) { %>
+      <li><%= error.msg %></li>
+    <% }); %>
+  </ul>
+<% } %>

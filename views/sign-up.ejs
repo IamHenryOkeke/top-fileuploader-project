@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black/80 text-white">
+  <main class="mx-auto w-full lg:w-3/4 p-4">
+    <%- include('./partials/navbar') %>
+    <div class="md:w-3/5 mx-auto mt-10">
+      <form action="/auth/sign-up" method="post" class="w-full mx-auto space-y-4 bg-gray-800 p-5 rounded-md shadow-md">
+          <h2 class="text-2xl font-semibold pb-3 border-b-2">Sign Up</h2>
+          <div class="flex flex-col space-y-2">
+              <label for="name">Name</label>
+              <input class="p-2 bg-transparent border rounded-md focus:outline-none" type="text" value="<%= (locals.data && locals.data.name) ? locals.data.name : '' %>" name="name" id="name" placeholder="Enter your name" required>
+          </div>
+
+          <div class="flex flex-col space-y-2">
+            <label for="email">Email</label>
+            <input class="p-2 bg-transparent border rounded-md focus:outline-none" type="email" value="<%= (locals.data && locals.data.email) ? locals.data.email : '' %>" name="email" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="flex flex-col space-y-2">
+              <label for="password">Password</label>
+              <input class="p-2 bg-transparent border rounded-md focus:outline-none" type="password" value="<%= (locals.data && locals.data.password) ? locals.data.password : '' %>" name="password" id="password" placeholder="Enter your password" required>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <label for="confirmPassword"> Confirm Password</label>
+            <input class="p-2 bg-transparent border rounded-md focus:outline-none" type="password" value="<%= (locals.data && locals.data.confirmPassword) ? locals.data.confirmPassword : '' %>" name="confirmPassword" id="confirmPassword" placeholder="Enter your password again" required>
+          </div>
+          <button class="w-full p-3 bg-blue-600 rounded-md" type="submit">Sign Up</button>
+      </form>
+      <%- include('./partials/errors') %>
+  </div>
+  </main>
+</body>
+</html>
