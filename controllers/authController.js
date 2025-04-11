@@ -61,10 +61,20 @@ const userSignUp = [
   })
 ] 
 
-const userLogin = passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/auth/login"
-})
+const userLogin = (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.status(401).render("login", {
+      errors: [{ msg: "Invalid credentials" }],
+      data: req.body
+    });
+
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      return res.status(200).redirect("/");
+    });
+  })(req, res, next);
+}
 
 const userLogout = (req, res) => {
   req.logout((err) => {

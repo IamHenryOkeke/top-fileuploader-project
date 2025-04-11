@@ -1,23 +1,45 @@
 const express = require("express");
 const path = require("node:path");
+const expressSession = require('express-session');
 const passport = require("passport");
+const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
+const prisma = require("./prisma");
 
 const indexRouter = require("./routes/indexRouter");
 const authRouter = require("./routes/authRouter");
+const { isAuth } = require("./middlewares/authMiddleware");
+
+require('./config/passport');
+require('dotenv').config();
 
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(expressSession({
+  cookie: {
+   maxAge: 10 * 60 * 1000 // ms
+  },
+  secret: "it's our secret",
+  resave: true,
+  saveUninitialized: true,
+  store: new PrismaSessionStore(
+    prisma,
+    {
+      checkPeriod: 2 * 60 * 1000,
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined
+    }
+  )
+}));
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((req, res, next) => {
   if (req.user) res.locals.user = req.user;
-
-  console.log(req.user)
-  console.log(res.locals.user)
   next();
 });
 
@@ -27,7 +49,7 @@ app.set("view engine", "ejs");
 
 
 // Routes
-app.use("/auth", authRouter)
+app.use("/auth", isAuth, authRouter)
 app.use("/", indexRouter)
 
 app.listen(3000, () => {

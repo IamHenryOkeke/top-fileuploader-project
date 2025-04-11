@@ -24,12 +24,26 @@ async function getUserByEmail(email) {
 
     return data;
   } catch (error) {
-    console.error("Error inserting new user:", error.message);
-    throw new Error("Database error: Unable to add user");
+    console.error("Error finding user:", error.message);
+    throw new Error("Database error: Unable to find user");
+  }
+}
+
+async function getUserByID(id) {
+  try {
+    const data = await prisma.user.findUnique({
+      where: { id }
+    })
+
+    return data;
+  } catch (error) {
+    console.error("Error finding user:", error.message);
+    throw new Error("Database error: Unable to find user");
   }
 }
 
 module.exports = {
   addNewUser,
-  getUserByEmail
+  getUserByEmail,
+  getUserByID
 };
