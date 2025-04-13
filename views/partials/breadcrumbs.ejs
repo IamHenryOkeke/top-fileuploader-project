@@ -1,0 +1,7 @@
+<nav class="my-3">
+  <a class="capitalize text-blue-400 hover:underline" href="/folders">Root</a>
+  <% path.forEach(f => { %>
+    &nbsp;/&nbsp;<a class="capitalize text-blue-400 hover:underline" href="/folders/<%= f.id %>"><%= f.name %></a>
+  <% }) %>
+  &nbsp;/&nbsp;<strong><%= folder.name %></strong>
+</nav>

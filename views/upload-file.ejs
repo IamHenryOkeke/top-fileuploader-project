@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload A File</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black/80 text-white">
+  <main class="mx-auto w-full lg:w-3/4 p-4">
+    <%- include('./partials/navbar') %>
+    <div class="md:w-3/5 mx-auto mt-10">
+      <form action="/folders/<%= folderId %>/upload-file" method="post" enctype="multipart/form-data" class="w-full mx-auto space-y-4 bg-gray-800 p-5 rounded-md shadow-md">
+          <h2 class="text-2xl font-semibold pb-3 border-b-2 mb-8">Upload File</h2>
+          <div class="flex flex-col space-y-2">
+            <label for="file">File</label>
+            <input class="p-2 bg-transparent border rounded-md focus:outline-none" type="file" value="<%= (locals.data && locals.data.file) ? locals.data.file : '' %>" name="file" id="file" placeholder="Choose a file" required>
+          </div>
+          <button class="w-full p-3 bg-blue-600 rounded-md" type="submit">Upload File</button>
+      </form>
+      <%- include('./partials/errors') %>
+  </div>
+  </main>
+</body>
+</html>

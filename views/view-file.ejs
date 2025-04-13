@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= file?.name || "Your File" %> </title>
+  <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+
+<body class="bg-black/80 text-white">
+  <main class="mx-auto w-full lg:w-3/4 p-4">
+    <%- include('./partials/navbar.ejs') %>
+    <h3 class="my-5 capitalize font-medium text-xl"><%= file.name || "Your File" %></h3>
+    <div class="space-y-4">
+      <p>Size: <%= file.size/1000 %> kb</p>
+      <p>File Type: <%= file.mimeType %></p>
+      <p>Date Created: <%= file.createdAt.toString().slice(0, 21) %></p>
+      <div class="mt-5">
+        <a class="w-full p-1.5 md:p-2 bg-blue-600 rounded-md" href="/files/download/<%= file.url.split('/').pop() %>">Download</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

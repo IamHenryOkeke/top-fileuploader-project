@@ -1,0 +1,12 @@
+<li>
+  <% if (file.mimeType.startsWith('image/')) { %>
+    🖼️ 
+  <% } else if (file.mimeType === 'application/pdf') { %>
+    📄 
+  <% } else { %>
+    📁 
+  <% } %>
+  <%= file.name %> 
+  - <a class="text-blue-400 hover:underline" href="/files/<%= file.id %>">View</a>
+</li>
+

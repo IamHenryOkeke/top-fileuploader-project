@@ -14,6 +14,11 @@
       <p class="mt-3 text-start text-gray-400">
         This is a file sharing app where you can upload and share files with others.
       </p>
+      <% if (locals.user) {%>
+        <div class="my-3">
+          <a href="/folders" class="text-blue-400 hover:underline">View Folders</a> 
+        </div>
+      <% } %>
     </div>
   </main>
 </body>

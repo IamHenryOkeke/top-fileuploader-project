@@ -20,6 +20,10 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Folder    Folder[]
+  File      File[]
+
+  @@index([email])
 }
 
 model Session {
@@ -27,4 +31,34 @@ model Session {
   sid       String   @unique
   data      String   @db.Text // MediumText may be needed for MySql
   expiresAt DateTime
+}
+
+model File {
+  id        String   @id @default(cuid())
+  name      String
+  size      Float
+  url       String
+  mimeType  String // e.g., "image/png", "application/pdf"
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId  String
+  Folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  files     File[]
+
+   // Self-referencing fields
+  parentId    String?   // Optional if it's a root folder
+  parent      Folder?   @relation("FolderToSubfolders", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Folder[]  @relation("FolderToSubfolders")
+
+  @@index([parentId])
 }

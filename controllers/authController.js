@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const { addNewUser, getUserByEmail } = require("../db/queries");
+const { addNewUser, getUserByEmail, createFolder } = require("../db/queries");
 const passwordUtils = require("../utils/passwordUtils");
 const asyncHandler = require("express-async-handler");
 const passport = require("passport");
@@ -55,7 +55,10 @@ const userSignUp = [
       password: hashedPassword
     };
 
-    await addNewUser(values);
+    const result = await addNewUser(values);
+
+    const folderName = result.email.split("@")[0];
+    await createFolder(folderName, result.id);
 
     res.status(200).redirect("login");
   })
@@ -71,7 +74,7 @@ const userLogin = (req, res, next) => {
 
     req.logIn(user, (err) => {
       if (err) return next(err);
-      return res.status(200).redirect("/");
+      return res.status(200).redirect("/folders");
     });
   })(req, res, next);
 }
