@@ -68,6 +68,7 @@ const deleteUserFolder = asyncHandler(async(req, res) => {
 const addFileToFolder = [
   upload.single('file'),
   asyncHandler(async(req, res) => {
+    console.log("hell")
     const { folderId } = req.params;
     const { originalname, mimetype, size, path } = req.file;
     const payload = {

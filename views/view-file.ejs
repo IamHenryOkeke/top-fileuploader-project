@@ -16,7 +16,7 @@
       <p>File Type: <%= file.mimeType %></p>
       <p>Date Created: <%= file.createdAt.toString().slice(0, 21) %></p>
       <div class="mt-5">
-        <a class="w-full p-1.5 md:p-2 bg-blue-600 rounded-md" href="/files/download/<%= file.url.split('/').pop() %>">Download</a>
+        <a class="w-full p-1.5 md:p-2 bg-blue-600 rounded-md" href="/files/download?filePath=<%= file.url %>&fileName=<%= file.name %>">Download</a>
       </div>
     </div>
   </main>
