@@ -1,22 +1,27 @@
-// routes/authorRouter.js
 const { Router } = require("express");
 const { getFileById } = require("../db/queries");
-const fileRouter = Router();
-const https = require("node:https")
+const axios = require('axios');
 
-fileRouter.get("/download", (req, res) => {
+const fileRouter = Router();
+
+fileRouter.get("/download", async(req, res) => {
   const { fileName, filePath } = req.query;
 
-  https.get(filePath, (fileRes) => {
-    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-    res.setHeader("Content-Type", fileRes.headers["content-type"]);
-    
-    // Pipe the remote file to the response stream
-    fileRes.pipe(res);
-  }).on("error", (err) => {
-    console.error("Download error:", err);
-    res.status(500).send("Failed to download file.");
-  });
+  try {
+    const response = await axios({
+      url: filePath,
+      method: 'GET',
+      responseType: 'stream',
+    });
+
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Content-Type', response.headers['content-type']);
+
+    response.data.pipe(res);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Download failed');
+  }
 });
 
 fileRouter.get("/:fileId", async(req, res) =>  {

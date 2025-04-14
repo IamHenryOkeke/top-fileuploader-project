@@ -30,7 +30,7 @@
             <%- include('partials/folder', { folder: child }) %>
           <% }) %>
         </ul>
-        <ul class="list-none text-lg">
+        <ul class="list-none space-y-2 md:text-lg">
           <% folder.files.forEach(child => { %>
             <%- include('partials/file', { file: child }) %>
           <% }) %>

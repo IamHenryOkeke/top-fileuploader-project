@@ -10,7 +10,7 @@
 <body class="bg-black/80 text-white">
   <main class="mx-auto w-full lg:w-3/4 p-4">
     <%- include('./partials/navbar.ejs') %>
-    <h3 class="my-5 capitalize font-medium text-xl"><%= file.name || "Your File" %></h3>
+    <h3 class="my-5 font-medium text-xl"><%= file.name || "Your File" %></h3>
     <div class="space-y-4">
       <p>Size: <%= file.size/1000 %> kb</p>
       <p>File Type: <%= file.mimeType %></p>
