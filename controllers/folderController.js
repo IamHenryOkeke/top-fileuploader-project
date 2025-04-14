@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const { createFolder, deleteFolder, getFolderByID, updateFolder, createFile } = require("../db/queries");
 const asyncHandler = require("express-async-handler");
 const upload = require("../config/multer");
+const { AppError } = require("../middlewares/errorHandler");
 
 const validateFolderFormBody = [
   body("name").trim()
@@ -60,9 +61,8 @@ const deleteUserFolder = asyncHandler(async(req, res) => {
     await deleteFolder(folderId, req.user.id);
     return res.status(200).redirect("/folders");
   }
-  res.status(400).json({
-    error: "Folder not found"
-  })
+
+  throw new AppError("Folder not found", 404)
 })
 
 const addFileToFolder = [

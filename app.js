@@ -57,6 +57,16 @@ app.use("/files", isAuth, fileRouter)
 app.use("/folders", isAuth, folderRouter)
 app.use("/", indexRouter)
 
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  const data = {
+    statusCode: err.statusCode,
+    message: err.message || "Something went wrong",
+  }
+  res.status(err.statusCode || 500).render("error-view", { data });
+});
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

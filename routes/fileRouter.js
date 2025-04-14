@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { getFileById } = require("../db/queries");
 const axios = require('axios');
+const { AppError } = require("../middlewares/errorHandler");
 
 const fileRouter = Router();
 
@@ -20,13 +21,16 @@ fileRouter.get("/download", async(req, res) => {
     response.data.pipe(res);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Download failed');
+    throw new AppError("Internal server", 500)
   }
 });
 
 fileRouter.get("/:fileId", async(req, res) =>  {
   const { fileId } = req.params;
   const file = await getFileById(fileId);
+  if (!file) {
+    throw new AppError("File not found", 404)
+  }
   res.render("view-file", { file })
 });
 

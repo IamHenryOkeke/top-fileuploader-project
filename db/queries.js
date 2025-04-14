@@ -1,3 +1,4 @@
+const { AppError } = require("../middlewares/errorHandler");
 const prisma = require("../prisma");
 
 async function addNewUser(values) {
@@ -9,6 +10,7 @@ async function addNewUser(values) {
     return data;
   } catch (error) {
     console.error("Error inserting new user:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -22,6 +24,7 @@ async function getUserByEmail(email) {
     return data;
   } catch (error) {
     console.error("Error finding user:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -34,6 +37,7 @@ async function getUserByID(id) {
     return data;
   } catch (error) {
     console.error("Error finding user:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -49,6 +53,7 @@ async function createFolder(folderName, folderId, userId) {
     return data;
   } catch (error) {
     console.error("Error finding user:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -63,6 +68,7 @@ async function deleteFolder(folderId, userId) {
     return data;
   } catch (error) {
     console.error("Error deleting user:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -77,6 +83,7 @@ async function updateFolder(folderId, folderName, userId) {
     return data;
   } catch (error) {
     console.error("Error updating folder:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -90,6 +97,7 @@ async function getAllFolders() {
     return data;
   } catch (error) {
     console.error("Error finding folders:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -125,6 +133,7 @@ async function getFolderByID(folderId) {
     return { folder, path };
   } catch (error) {
     console.error("Error finding folder:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -136,6 +145,7 @@ async function getFolderBySlug(slug) {
     return data;
   } catch (error) {
     console.error("Error finding folder:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -155,6 +165,7 @@ async function createFile(values) {
     return data;
   } catch (error) {
     console.error("Error finding user:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 
@@ -168,6 +179,7 @@ async function getFileById(id) {
     return data;
   } catch (error) {
     console.error("Error finding user:", error.message);
+    throw new AppError("Internal server error", 500)
   }
 }
 

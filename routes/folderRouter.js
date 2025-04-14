@@ -1,4 +1,3 @@
-// routes/authorRouter.js
 const { Router } = require("express");
 const { createNewFolder, deleteUserFolder, updateUserFolder, addFileToFolder } = require("../controllers/folderController");
 const { getAllFolders, getFolderByID } = require("../db/queries");
@@ -12,7 +11,11 @@ folderRouter.post("/create", createNewFolder);
 folderRouter.get("/:folderId", async(req, res) => {
   const { folderId } = req.params;
   const {path, folder} = await getFolderByID(folderId);
-  console.log(folder);
+
+  if (!folder) {
+    throw new AppError("Folder not found", 404)
+  }
+
   res.render("view-folder", {folder, path})
 });
 
@@ -36,7 +39,6 @@ folderRouter.get("/:folderId/update-folder", async(req, res) => {
 folderRouter.post("/:folderId/update-folder", updateUserFolder);
 
 folderRouter.post("/:folderId/delete-folder", deleteUserFolder);
-
 
 folderRouter.get("/", async(req, res) => {
   const folders = await getAllFolders();
