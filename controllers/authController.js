@@ -65,19 +65,26 @@ const userSignUp = [
 ] 
 
 const userLogin = (req, res, next) => {
+  const callbackUrl = req.query.callbackUrl || "/";
+
   passport.authenticate('local', (err, user, info) => {
     if (err) return next(err);
-    if (!user) return res.status(401).render("login", {
-      errors: [{ msg: "Invalid credentials" }],
-      data: req.body
-    });
+
+    if (!user) {
+      return res.status(401).render("login", {
+        errors: [{ msg: "Invalid credentials" }],
+        callbackUrl,
+        data: req.body
+      });
+    }
 
     req.logIn(user, (err) => {
       if (err) return next(err);
-      return res.status(200).redirect("/folders");
+      return res.redirect(callbackUrl);
     });
   })(req, res, next);
 }
+
 
 const userLogout = (req, res) => {
   req.logout((err) => {

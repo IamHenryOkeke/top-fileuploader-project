@@ -11,7 +11,7 @@ module.exports.isAuth = (req, res, next) => {
         if (req.url.includes('login') || req.url.includes('sign-up')) {
             next();
         }else {
-            res.redirect('/auth/login');
+            res.redirect(`/auth/login?callbackUrl=${req.originalUrl}`);
         }
     }
 };
