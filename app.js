@@ -55,6 +55,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/auth", isAuth, authRouter)
 app.use("/files", isAuth, fileRouter)
 app.use("/folders", isAuth, folderRouter)
+app.use("/share", folderRouter)
 app.use("/", indexRouter)
 
 // Error handler

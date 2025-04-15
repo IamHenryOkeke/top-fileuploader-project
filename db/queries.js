@@ -87,6 +87,37 @@ async function updateFolder(folderId, folderName, userId) {
   }
 }
 
+async function shareFolder(folderId, userId, expiresAt) {
+  try {
+    const data = await prisma.sharedFolder.create({
+      data: {
+        folderId,
+        userId,
+        expiresAt
+      }
+    })
+    return data;
+  } catch (error) {
+    console.error("Error sharing folder:", error.message);
+    throw new AppError("Internal server error", 500)
+  }
+}
+
+async function unshareFolder(folderId, userId) {
+  try {
+    const data = await prisma.sharedFolder.delete({
+      where: {
+        folderId,
+        userId
+      }
+    })
+    return data;
+  } catch (error) {
+    console.error("Error deleting folder:", error.message);
+    throw new AppError("Internal server error", 500)
+  }
+}
+
 async function getAllFolders() {
   try {
     const data = await prisma.folder.findMany({
@@ -108,6 +139,11 @@ async function getFolderByID(folderId) {
       include: {
         children: true,
         files: true,
+        SharedFolder: {
+          select: {
+            id: true
+          }
+        },
         parent: {
           include: {
             parent: {
@@ -120,7 +156,6 @@ async function getFolderByID(folderId) {
       },
     });
   
-    // Build breadcrumb path
     const path = [];
     let current = folder;
     while (current?.parent) {
@@ -183,16 +218,37 @@ async function getFileById(id) {
   }
 }
 
+
+async function getSharedFolderById(id) {
+  try {
+    const data = await prisma.sharedFolder.findUnique({
+      where: {
+        id
+      },
+      include: {
+        Folder: true
+      }
+    })
+    return data;
+  } catch (error) {
+    console.error("Error finding shared folder:", error.message);
+    throw new AppError("Internal server error", 500)
+  }
+}
+
 module.exports = {
   addNewUser,
   getUserByEmail,
   getUserByID,
   createFolder,
+  shareFolder,
+  unshareFolder,
   deleteFolder,
   updateFolder,
   getAllFolders,
   getFolderByID,
   getFolderBySlug,
   createFile,
-  getFileById
+  getFileById,
+  getSharedFolderById
 };

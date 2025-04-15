@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const { createFolder, deleteFolder, getFolderByID, updateFolder, createFile } = require("../db/queries");
+const { createFolder, deleteFolder, getFolderByID, updateFolder, createFile, shareFolder, unshareFolder } = require("../db/queries");
 const asyncHandler = require("express-async-handler");
 const upload = require("../config/multer");
 const { AppError } = require("../middlewares/errorHandler");
@@ -8,6 +8,11 @@ const validateFolderFormBody = [
   body("name").trim()
     .isAlpha('en-US', { ignore: ' ' }).withMessage('Folder name must contain only letters')
     .isLength({ min: 3 }).withMessage("Folder name must be at least 3 characters long"),
+];
+
+const validateShareFolderFormBody = [
+  body("duration")
+    .isInt({ min: 3 }).withMessage("Duration must be at least 3 days"),
 ];
 
 const createNewFolder = [
@@ -65,6 +70,51 @@ const deleteUserFolder = asyncHandler(async(req, res) => {
   throw new AppError("Folder not found", 404)
 })
 
+const shareUserFolder = [
+  validateShareFolderFormBody,
+  asyncHandler(async(req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).render("share-folder", {
+        errors: errors.array(),
+        data: req.body,
+        folderId: req.params.folderId
+      });
+    }
+
+    const { folderId } = req.params;
+    const { duration } = req.body;
+
+    const folder = await getFolderByID(folderId);
+
+    if (!folder) {
+      throw new AppError("Folder not found", 404)
+    }
+
+    const durationInDays = Number(duration);
+    const now = new Date();
+    const formattedDuration = new Date(now.getTime() +(durationInDays * 24 * 60 * 60 * 1000));
+
+    await shareFolder(folderId, req.user.id, formattedDuration);
+    res.status(200).redirect(`/folders/${folderId}`);
+   })
+]
+
+const unshareUserFolder = asyncHandler(async(req, res) => {
+  const folderId = req.params.folderId;
+
+  const folder = await getFolderByID(folderId);
+
+  if (!folder) {
+    throw new AppError("Folder not found", 404)
+  }
+
+  await unshareFolder(folderId, req.user.id);
+  res.status(200).redirect(`/folders/${folderId}`);
+})
+
+
 const addFileToFolder = [
   upload.single('file'),
   asyncHandler(async(req, res) => {
@@ -86,6 +136,8 @@ const addFileToFolder = [
 module.exports = {
   createNewFolder,
   deleteUserFolder,
+  unshareUserFolder,
+  shareUserFolder,
   updateUserFolder,
   addFileToFolder
 }

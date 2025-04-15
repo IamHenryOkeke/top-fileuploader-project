@@ -1,12 +1,12 @@
 const { Router } = require("express");
-const { createNewFolder, deleteUserFolder, updateUserFolder, addFileToFolder } = require("../controllers/folderController");
+const { createNewFolder, deleteUserFolder, updateUserFolder, addFileToFolder, shareUserFolder, unshareUserFolder } = require("../controllers/folderController");
 const { getAllFolders, getFolderByID } = require("../db/queries");
+const { AppError } = require("../middlewares/errorHandler");
 
 const folderRouter = Router();
 
 folderRouter.get("/create", (req, res) => {res.render("create-folder")});
 folderRouter.post("/create", createNewFolder);
-
 
 folderRouter.get("/:folderId", async(req, res) => {
   const { folderId } = req.params;
@@ -30,6 +30,14 @@ folderRouter.get("/:folderId/add-a-folder", async(req, res) => {
   res.render("create-folder", {folderId})
 });
 folderRouter.post("/:folderId/add-a-folder", createNewFolder);
+
+folderRouter.get("/:folderId/share-folder", (req, res) => {
+  const { folderId } = req.params;
+  let data;
+  res.render("share-folder", { folderId, data })
+});
+folderRouter.post("/:folderId/share-folder", shareUserFolder);
+folderRouter.post("/:folderId/unshare-folder", unshareUserFolder);
 
 folderRouter.get("/:folderId/update-folder", async(req, res) => {
   const { folderId } = req.params;

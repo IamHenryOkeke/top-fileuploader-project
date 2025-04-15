@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Folder    Folder[]
-  File      File[]
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  Folders       Folder[]
+  Files         File[]
+  SharedFolders SharedFolder[]
 
   @@index([email])
 }
@@ -47,18 +48,27 @@ model File {
 }
 
 model Folder {
-  id        String   @id @default(cuid())
-  name      String  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  files     File[]
-
-   // Self-referencing fields
-  parentId    String?   // Optional if it's a root folder
-  parent      Folder?   @relation("FolderToSubfolders", fields: [parentId], references: [id], onDelete: Cascade)
-  children    Folder[]  @relation("FolderToSubfolders")
+  id           String        @id @default(cuid())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  files        File[]
+  parentId     String? // Optional if it's a root folder
+  parent       Folder?       @relation("FolderToSubfolders", fields: [parentId], references: [id], onDelete: Cascade)
+  children     Folder[]      @relation("FolderToSubfolders")
+  SharedFolder SharedFolder?
 
   @@index([parentId])
+}
+
+model SharedFolder {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId  String   @unique
+  Folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }

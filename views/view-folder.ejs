@@ -13,7 +13,7 @@
     <%- include('./partials/breadcrumbs.ejs') %>
     <div class="my-5 flex flex-col gap-3 md:flex-row justify-between md:items-center">
       <h3 class="capitalize font-medium text-xl"><%= locals?.folder?.name || "Your" %> Folder</h3>
-      <div class="flex gap-3 text-xs md:text-sm text-nowrap">
+      <div class="flex gap-3 text-xs text-nowrap">
         <a href="/folders/<%= locals.folder.id  %>/upload-file" class="w-full p-1.5 md:p-2 bg-blue-600 rounded-md">Upload a file</a>
         <a href="/folders/<%= locals.folder.id  %>/add-a-folder" class="w-full p-1.5 md:p-2 bg-blue-600 rounded-md">Add a Folder</a>
         <a href="/folders/<%= locals.folder.id  %>/update-folder" class="w-full p-1.5 md:p-2 bg-blue-600 rounded-md">Update Folder</a>
@@ -23,6 +23,16 @@
       </div>
     </div>
     <hr class="mb-5">
+    <div class="my-5 flex gap-3 text-xs">
+      <% if (locals.folder.SharedFolder) { %>
+        <button onclick="copyShareLink('<%= locals.folder.SharedFolder.id %>')"  class="p-1.5 md:p-2 bg-blue-600 rounded-md" type="submit">Copy Share Link</button>
+        <form action="/folders/<%= locals.folder.id  %>/unshare-folder" method="post" onsubmit="return confirm('Are you sure you want to unshare this folder?');">
+          <button class="w-full p-1.5 md:p-2 bg-blue-600 rounded-md" type="submit">Unshare Folder</button>
+        </form>
+      <% } else { %>
+        <a href="/folders/<%= locals.folder.id  %>/share-folder" class="p-1.5 md:p-2 bg-blue-600 rounded-md">Share Folder</a>
+      <% } %>
+    </div>
     <div>     
       <% if ((folder.children && folder.children.length) || (folder.files && folder.files.length)) { %>
         <ul class="list-none text-lg">
@@ -42,4 +52,15 @@
     </div>
   </main>
 </body>
+<script>
+  function copyShareLink(sharedFolderId) {
+    const baseUrl = window.location.origin;
+    const shareLink = `${baseUrl}/shared/${sharedFolderId}`;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareLink)
+      .then(() => alert("Share link copied!"))
+      .catch(err => console.error("Failed to copy", err));
+  }
+</script>
 </html>
