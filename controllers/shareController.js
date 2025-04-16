@@ -1,14 +1,14 @@
 const { getFileById, getSharedFolderById, getFolderByID } = require("../db/queries");
 const asyncHandler = require("express-async-handler");
-const { AppError } = require("../error/errorHandler");
 const { isDescendant } = require("../utils/isDescendant");
+const { AppError } = require("../error/errorHandler");
 
 const viewSharedFolder = asyncHandler(async(req, res) => {
   const { sharedFolderId } = req.params;
 
   const sharedFolder = await getSharedFolderById(sharedFolderId);
-
-  if (!sharedFolder.Folder) {
+  
+  if (!sharedFolder) {
     throw new AppError("Folder not found", 404)
   }
 

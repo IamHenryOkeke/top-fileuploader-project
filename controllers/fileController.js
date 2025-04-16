@@ -1,6 +1,6 @@
 const { deleteFile, getFileById } = require("../db/queries");
 const asyncHandler = require("express-async-handler");
-const { AppError } = require("../middlewares/errorHandler");
+const { AppError } = require("../error/errorHandler");
 
 
 const deleteFileFromFolder = asyncHandler(async(req, res) => {

@@ -2,7 +2,7 @@ const { body, validationResult } = require("express-validator");
 const { createFolder, deleteFolder, getFolderByID, updateFolder, createFile, shareFolder, unshareFolder } = require("../db/queries");
 const asyncHandler = require("express-async-handler");
 const upload = require("../config/multer");
-const { AppError } = require("../middlewares/errorHandler");
+const { AppError } = require("../error/errorHandler");
 
 const validateFolderFormBody = [
   body("name").trim()

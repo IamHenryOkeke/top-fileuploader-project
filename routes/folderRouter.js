@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { createNewFolder, deleteUserFolder, updateUserFolder, addFileToFolder, shareUserFolder, unshareUserFolder } = require("../controllers/folderController");
 const { getAllFolders, getFolderByID } = require("../db/queries");
-const { AppError } = require("../middlewares/errorHandler");
+const { AppError } = require("../error/errorHandler");
 
 const folderRouter = Router();
 

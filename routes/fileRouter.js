@@ -1,8 +1,8 @@
 const { Router } = require("express");
 const { getFileById } = require("../db/queries");
 const axios = require('axios');
-const { AppError } = require("../middlewares/errorHandler");
 const { deleteFileFromFolder } = require("../controllers/fileController");
+const { AppError } = require("../error/errorHandler");
 
 const fileRouter = Router();
 

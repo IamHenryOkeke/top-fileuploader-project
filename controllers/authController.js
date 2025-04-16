@@ -58,7 +58,7 @@ const userSignUp = [
     const result = await addNewUser(values);
 
     const folderName = result.email.split("@")[0];
-    await createFolder(folderName, result.id);
+    await createFolder(folderName, null, result.id);
 
     res.status(200).redirect("login");
   })
