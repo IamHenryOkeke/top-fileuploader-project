@@ -148,7 +148,7 @@ async function getFolderByID(folderId) {
           include: {
             parent: {
               include: {
-                parent: true, // you can keep nesting if needed
+                parent: true, 
               },
             },
           },
@@ -204,11 +204,27 @@ async function createFile(values) {
   }
 }
 
+async function deleteFile(fileId, userId) {
+  try {
+    const data = await prisma.file.delete({
+      where: {
+        id: fileId,
+        userId
+      }
+    })
+    return data;
+  } catch (error) {
+    console.error("Error deleting user:", error.message);
+    throw new AppError("Internal server error", 500)
+  }
+}
+
 async function getFileById(id) {
   try {
     const data = await prisma.file.findUnique({
-      where: {
-        id
+      where: { id },
+      include: {
+        Folder: true
       }
     })
     return data;
@@ -221,17 +237,34 @@ async function getFileById(id) {
 
 async function getSharedFolderById(id) {
   try {
-    const data = await prisma.sharedFolder.findUnique({
-      where: {
-        id
-      },
+    const sharedFolder = await prisma.sharedFolder.findUnique({
+      where: { id },
       include: {
-        Folder: true
+        Folder: {
+          include: {
+            children: true,
+            files: true,
+            SharedFolder: {
+              select: {
+                id: true
+              }
+            },
+            parent: {
+              include: {
+                parent: {
+                  include: {
+                    parent: true, // you can keep nesting if needed
+                  },
+                },
+              },
+            },
+          },
+        }
       }
     })
-    return data;
+    return sharedFolder;
   } catch (error) {
-    console.error("Error finding shared folder:", error.message);
+    console.error("Error finding folder:", error.message);
     throw new AppError("Internal server error", 500)
   }
 }
@@ -249,6 +282,7 @@ module.exports = {
   getFolderByID,
   getFolderBySlug,
   createFile,
+  deleteFile,
   getFileById,
   getSharedFolderById
 };

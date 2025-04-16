@@ -2,6 +2,7 @@ const { Router } = require("express");
 const { getFileById } = require("../db/queries");
 const axios = require('axios');
 const { AppError } = require("../middlewares/errorHandler");
+const { deleteFileFromFolder } = require("../controllers/fileController");
 
 const fileRouter = Router();
 
@@ -33,5 +34,7 @@ fileRouter.get("/:fileId", async(req, res) =>  {
   }
   res.render("view-file", { file })
 });
+
+fileRouter.post("/:fileId/delete", deleteFileFromFolder);
 
 module.exports = fileRouter;

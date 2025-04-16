@@ -42,6 +42,7 @@ folderRouter.post("/:folderId/unshare-folder", unshareUserFolder);
 folderRouter.get("/:folderId/update-folder", async(req, res) => {
   const { folderId } = req.params;
   const { folder } = await getFolderByID(folderId);
+  console.log(folder)
   res.render("update-folder", {folder})
 });
 folderRouter.post("/:folderId/update-folder", updateUserFolder);

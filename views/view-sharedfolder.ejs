@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= locals?.folder?.name || "Your" %> Folder</title>
+  <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+
+<body class="bg-black/80 text-white">
+  <main class="mx-auto w-full lg:w-3/4 p-4">
+    <%- include('./partials/navbar.ejs') %>
+    <div class="my-5 flex flex-col gap-3 md:flex-row justify-between md:items-center">
+      <h3 class="capitalize font-medium text-xl"><%= locals?.folder?.name || "Your" %> Folder</h3>
+    </div>
+    <hr class="mb-5">
+    <div>     
+      <% if ((folder.children && folder.children.length) || (folder.files && folder.files.length)) { %>
+        <ul class="list-none text-lg">
+          <% folder.children.forEach(child => { %>
+            <li>
+              <a class="capitalize text-blue-400 hover:underline" href="/shared/<%= sharedId %>/child/<%= child.id %>">
+                <%= child.name %>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+        <ul class="list-none space-y-2 md:text-lg">
+          <% folder.files.forEach(child => { %>
+            <li>
+              <% if (child.mimeType.startsWith('image/')) { %>
+                🖼️ 
+              <% } else if (child.mimeType === 'application/pdf') { %>
+                📄 
+              <% } else { %>
+                📁 
+              <% } %>
+              <%= child.name %> 
+              - <a class="text-blue-400 hover:underline" href="/shared/<%= sharedId %>/files/<%= child.id %>">View</a>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>This folder is empty</p>
+      <% } %>
+    </div>
+  </main>
+</body>
+<script>
+  function copyShareLink(sharedFolderId) {
+    const baseUrl = window.location.origin;
+    const shareLink = `${baseUrl}/shared/${sharedFolderId}`;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareLink)
+      .then(() => alert("Share link copied!"))
+      .catch(err => console.error("Failed to copy", err));
+  }
+</script>
+</html>

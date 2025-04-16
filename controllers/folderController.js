@@ -31,7 +31,7 @@ const createNewFolder = [
     const { folderId } = req.params;
 
     await createFolder(name, folderId, req.user.id);
-    res.status(200).redirect("/folders");
+    res.status(200).redirect(`/folders/${folderId}`);
   })
 ] 
 
@@ -40,7 +40,7 @@ const updateUserFolder = [
   asyncHandler(async(req, res) => {
     const errors = validationResult(req);
     const { folderId } =  req.params;
-    const folder = await getFolderByID(folderId);
+    const { folder } = await getFolderByID(folderId);
 
     if (!errors.isEmpty()) {
       return res.status(400).render("update-folder", {
@@ -51,23 +51,33 @@ const updateUserFolder = [
     }
 
     const { name } = req.body;
+  
+    if(folder.userId !== req.user.id) {
+      throw new AppError("User is mot the owner of the folder", 400)
+    }
 
     await updateFolder(folderId, name, req.user.id);
-    res.status(200).redirect("/folders");
+    res.status(200).redirect(`/folders/${folderId}`);
   })
 ]
 
 const deleteUserFolder = asyncHandler(async(req, res) => {
   const { folderId } = req.params;
 
-  const existingFolder = await getFolderByID(folderId);
+  const { folder } = await getFolderByID(folderId);
 
-  if (existingFolder) {
-    await deleteFolder(folderId, req.user.id);
-    return res.status(200).redirect("/folders");
+  if(!folder) {
+    throw new AppError("Folder not found", 404)
   }
 
-  throw new AppError("Folder not found", 404)
+  if(folder.userId !== req.user.id) {
+    throw new AppError("User is mot the owner of the folder", 400)
+  }
+
+  const url = folder.parentId ? `/folders/${folder.parentId}` : "/folders"
+
+  await deleteFolder(folderId, req.user.id);
+  return res.status(200).redirect(url);
 })
 
 const shareUserFolder = [
@@ -118,7 +128,6 @@ const unshareUserFolder = asyncHandler(async(req, res) => {
 const addFileToFolder = [
   upload.single('file'),
   asyncHandler(async(req, res) => {
-    console.log("hell")
     const { folderId } = req.params;
     const { originalname, mimetype, size, path } = req.file;
     const payload = {
@@ -139,5 +148,5 @@ module.exports = {
   unshareUserFolder,
   shareUserFolder,
   updateUserFolder,
-  addFileToFolder
+  addFileToFolder,
 }

@@ -10,6 +10,7 @@ const authRouter = require("./routes/authRouter");
 const { isAuth } = require("./middlewares/authMiddleware");
 const fileRouter = require("./routes/fileRouter");
 const folderRouter = require("./routes/folderRouter");
+const shareRouter = require("./routes/shareRouter");
 
 require('./config/passport');
 require('dotenv').config();
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(expressSession({
   cookie: {
-   maxAge: 20 * 60 * 1000 // ms
+   maxAge: 30 * 60 * 1000 // ms
   },
   secret: "it's our secret",
   resave: true,
@@ -55,7 +56,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/auth", isAuth, authRouter)
 app.use("/files", isAuth, fileRouter)
 app.use("/folders", isAuth, folderRouter)
-app.use("/share", folderRouter)
+app.use("/shared", shareRouter)
 app.use("/", indexRouter)
 
 // Error handler
