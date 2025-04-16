@@ -1,4 +1,4 @@
-const { AppError } = require("../middlewares/errorHandler");
+const { AppError } = require("../error/errorHandler");
 const prisma = require("../prisma");
 
 async function addNewUser(values) {

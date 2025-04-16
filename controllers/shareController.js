@@ -1,6 +1,6 @@
 const { getFileById, getSharedFolderById, getFolderByID } = require("../db/queries");
 const asyncHandler = require("express-async-handler");
-const { AppError } = require("../middlewares/errorHandler");
+const { AppError } = require("../error/errorHandler");
 const { isDescendant } = require("../utils/isDescendant");
 
 const viewSharedFolder = asyncHandler(async(req, res) => {
