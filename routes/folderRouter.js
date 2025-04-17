@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { createNewFolder, deleteUserFolder, updateUserFolder, addFileToFolder, shareUserFolder, unshareUserFolder } = require("../controllers/folderController");
-const { getAllFolders, getFolderByID } = require("../db/queries");
+const { getFolderByID, getUserFolders } = require("../db/queries");
 const { AppError } = require("../error/errorHandler");
 
 const folderRouter = Router();
@@ -10,7 +10,7 @@ folderRouter.post("/create", createNewFolder);
 
 folderRouter.get("/:folderId", async(req, res) => {
   const { folderId } = req.params;
-  const {path, folder} = await getFolderByID(folderId);
+  const {path, folder} = await getFolderByID(folderId, req.user.id);
 
   if (!folder) {
     throw new AppError("Folder not found", 404)
@@ -50,7 +50,7 @@ folderRouter.post("/:folderId/update-folder", updateUserFolder);
 folderRouter.post("/:folderId/delete-folder", deleteUserFolder);
 
 folderRouter.get("/", async(req, res) => {
-  const folders = await getAllFolders();
+  const folders = await getUserFolders(req.user.id);
   res.render("folders", { folders })
 });
 

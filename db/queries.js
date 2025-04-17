@@ -118,11 +118,12 @@ async function unshareFolder(folderId, userId) {
   }
 }
 
-async function getAllFolders() {
+async function getUserFolders(userId) {
   try {
     const data = await prisma.folder.findMany({
       where: {
-        parentId: null
+        parentId: null,
+        userId
       }
     })
     return data;
@@ -132,10 +133,10 @@ async function getAllFolders() {
   }
 }
 
-async function getFolderByID(folderId) {
+async function getFolderByID(folderId, userId) {
   try {
     const folder = await prisma.folder.findUnique({
-      where: { id: folderId },
+      where: { id: folderId, userId },
       include: {
         children: true,
         files: true,
@@ -278,7 +279,7 @@ module.exports = {
   unshareFolder,
   deleteFolder,
   updateFolder,
-  getAllFolders,
+  getUserFolders,
   getFolderByID,
   getFolderBySlug,
   createFile,
